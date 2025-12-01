@@ -251,6 +251,7 @@ def show_quiz_page():
             if st.button(option, key=f"option_{idx}", use_container_width=True):
                 if option == question_data['correct_answer']:
                     st.session_state.assignment_revealed = True
+                    st.session_state.answered_correctly = True
                     st.session_state.question_attempts = 0
                     st.success("✅ Correct! Preparing to reveal your Secret Santa child...")
                     st.rerun()
@@ -275,6 +276,7 @@ def show_quiz_page():
         if st.session_state.question_attempts >= 5:
             if st.button("🎁 Reveal Anyway", use_container_width=True, type="primary"):
                 st.session_state.assignment_revealed = True
+                st.session_state.answered_correctly = False
                 st.session_state.question_attempts = 0
                 st.rerun()
     
@@ -300,9 +302,18 @@ def show_assignment_details(assignment):
     
     child_username = assignment_result['child_username']
     
-    st.markdown("<div class='success-box'>", unsafe_allow_html=True)
-    st.markdown("### ✅ Correct Answer!")
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Show appropriate message based on how they revealed
+    if 'answered_correctly' not in st.session_state:
+        st.session_state.answered_correctly = False
+    
+    if st.session_state.answered_correctly:
+        st.markdown("<div class='success-box'>", unsafe_allow_html=True)
+        st.markdown("### ✅ Correct Answer!")
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.markdown("<div class='info-box'>", unsafe_allow_html=True)
+        st.markdown("### 🎁 Revealing Your Secret Santa Child")
+        st.markdown("</div>", unsafe_allow_html=True)
     
     # Show spinner wheel animation
     st.markdown("---")
@@ -402,6 +413,8 @@ def show_dashboard():
                 del st.session_state.wheel_spun
             if 'question_attempts' in st.session_state:
                 del st.session_state.question_attempts
+            if 'answered_correctly' in st.session_state:
+                del st.session_state.answered_correctly
             st.rerun()
     
     # Main content
