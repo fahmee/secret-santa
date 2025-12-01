@@ -90,7 +90,7 @@ def create_circular_spinner_wheel(names, winner_name):
     
     # Final result - show winner
     with wheel_placeholder.container():
-        st.markdown("### 🎉 WINNER!")
+        st.markdown("### 🎁 Your Secret Santa Child!")
         st.balloons()
         st.markdown("<div style='text-align: center; font-size: 2em; color: red;'>⬇️</div>", unsafe_allow_html=True)
         
