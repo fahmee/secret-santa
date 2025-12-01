@@ -204,15 +204,16 @@ def show_quiz_page():
     """Display quiz to reveal Secret Santa assignment"""
     st.markdown("<h2 style='text-align: center;'>🎯 Answer to Reveal Your Secret Santa Child</h2>", unsafe_allow_html=True)
     
-    # Get current username
+    # Get current username and email
     current_username = st.session_state.user_data['username']
+    current_email = st.session_state.user_data['email']
     
-    # Check if this user has an assignment in Excel
-    child_username = get_assignment_from_excel(current_username)
+    # Check if this user has an assignment in Excel (with email verification)
+    assignment_result = get_assignment_from_excel(current_username, current_email)
     
-    if not child_username:
+    if not assignment_result:
         st.markdown("<div class='warning-box'>", unsafe_allow_html=True)
-        st.markdown("**⚠️ Secret Santa assignment not found in Excel file. Please contact the organizer.**")
+        st.markdown("**⚠️ Secret Santa assignment not found or email mismatch. Please contact the organizer.**")
         st.markdown("</div>", unsafe_allow_html=True)
         return
     
@@ -286,15 +287,18 @@ def show_quiz_page():
 def show_assignment_details(assignment):
     """Display Secret Santa assignment after correct answer - child from Excel, details from DB"""
     
-    # Get current user's username
+    # Get current user's username and email
     current_username = st.session_state.user_data['username']
+    current_email = st.session_state.user_data['email']
     
     # Get child from Excel file (THIS IS THE KEY - Excel tells us WHO the child is)
-    child_username = get_assignment_from_excel(current_username)
+    assignment_result = get_assignment_from_excel(current_username, current_email)
     
-    if not child_username:
-        st.error(f"Could not find assignment for {current_username} in Excel file")
+    if not assignment_result:
+        st.error(f"Could not find assignment for {current_username} in Excel file or email mismatch")
         return
+    
+    child_username = assignment_result['child_username']
     
     st.markdown("<div class='success-box'>", unsafe_allow_html=True)
     st.markdown("### ✅ Correct Answer!")

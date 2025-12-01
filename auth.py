@@ -11,6 +11,10 @@ def register_user(username, email, password):
     """Register a new user"""
     db = get_db()
     
+    # Convert email and username to lowercase for consistency
+    email = email.lower().strip()
+    username = username.lower().strip()
+    
     # Check if email already exists
     users_ref = db.collection('users')
     existing_user = users_ref.where('email', '==', email).get()
@@ -41,6 +45,9 @@ def login_user(email, password):
     """Authenticate user login"""
     db = get_db()
     users_ref = db.collection('users')
+    
+    # Convert email to lowercase for consistency
+    email = email.lower().strip()
     
     # Find user by email
     users = users_ref.where('email', '==', email).get()
