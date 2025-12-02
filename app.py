@@ -7,7 +7,7 @@ from database import (
     get_all_usernames_except, get_all_users
 )
 from spinner import create_circular_spinner_wheel
-from excel_reader import get_assignment_from_excel, get_all_assignments_from_excel
+from excel_reader import get_assignment_from_excel, get_all_assignments_from_excel, get_all_child_names_from_excel, get_santa_name_by_email
 
 # Page configuration
 st.set_page_config(
@@ -426,7 +426,7 @@ def show_assignment_details(assignment):
     # Get current user's email
     current_email = st.session_state.user_data['email']
     
-    # Get child email from Excel file (Excel tells us child's EMAIL)
+    # Get child email and name from Excel file
     assignment_result = get_assignment_from_excel(current_email)
     
     if not assignment_result:
@@ -434,6 +434,7 @@ def show_assignment_details(assignment):
         return
     
     child_email = assignment_result['child_email']
+    child_name_from_excel = assignment_result['child_name']  # Get name from Excel
     
     # Now get the child's details from DATABASE using their email
     all_users = get_all_users()
@@ -443,14 +444,9 @@ def show_assignment_details(assignment):
             child_user = user
             break
     
-    # If child hasn't registered, use email username as display name
-    if not child_user:
-        # Extract username from email (part before @)
-        child_username = child_email.split('@')[0]
-        child_registered = False
-    else:
-        child_username = child_user['username']
-        child_registered = True
+    # Use name from Excel (always available), regardless of registration status
+    child_username = child_name_from_excel
+    child_registered = child_user is not None
     
     # Show appropriate message based on how they revealed
     if 'answered_correctly' not in st.session_state:
@@ -468,23 +464,46 @@ def show_assignment_details(assignment):
     # Show spinner wheel animation
     st.markdown("---")
     
-    # Get all usernames from DATABASE (not Excel) for the wheel
-    all_usernames = get_all_usernames_except(st.session_state.user_data['user_id'])
+    # Get names from Excel for the wheel (not from database)
+    # This ensures consistent display using official participant names
+    excel_names = get_all_child_names_from_excel()
+    
+    # Get current user's info to exclude them
+    current_username = st.session_state.user_data['username']
+    current_email = st.session_state.user_data['email']
+    
+    # Get the Santa name from Excel based on email (in case they registered with different name)
+    santa_name_from_excel = get_santa_name_by_email(current_email)
+    
+    # Build list of names to exclude (current user's variations)
+    names_to_exclude = set()
+    names_to_exclude.add(current_username.lower())
+    if santa_name_from_excel:
+        names_to_exclude.add(santa_name_from_excel.lower())
+    
+    # Filter out current user's name from Excel names
+    all_usernames = []
+    for name in excel_names:
+        # Skip if name matches any variation of current user
+        if name.lower() not in names_to_exclude:
+            all_usernames.append(name)
     
     # Ensure child is in the list
     if child_username not in all_usernames:
         all_usernames.append(child_username)
     
-    # Limit to 8 names including the child
-    wheel_names = all_usernames
-    if len(wheel_names) > 8:
-        # Keep child and random others
-        other_names = [n for n in wheel_names if n.lower() != child_username.lower()]
+    # Limit to 8 names including the child and randomize
+    if len(all_usernames) > 8:
+        # Keep child and get 7 random others
+        other_names = [n for n in all_usernames if n.lower() != child_username.lower()]
         random_others = random.sample(other_names, min(7, len(other_names)))
         wheel_names = random_others + [child_username]
-    elif len(wheel_names) < 8:
-        # If less than 8, just use what we have
-        wheel_names = all_usernames
+        # Shuffle so child isn't always at the end
+        random.shuffle(wheel_names)
+    else:
+        # Use all available names and shuffle
+        wheel_names = all_usernames.copy()
+        random.shuffle(wheel_names)
     
     # Initialize wheel spin state
     if 'wheel_spun' not in st.session_state:
