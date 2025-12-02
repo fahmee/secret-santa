@@ -2,13 +2,14 @@ from firebase_config import get_db
 from firebase_admin import firestore
 import random
 
-def save_user_profile(user_id, shipping_address, wishlist, anti_wishlist):
+def save_user_profile(user_id, shipping_address, phone_number, wishlist, anti_wishlist):
     """Save user profile details"""
     db = get_db()
     
     profile_data = {
         'user_id': user_id,
         'shipping_address': shipping_address,
+        'phone_number': phone_number,
         'wishlist': wishlist,
         'anti_wishlist': anti_wishlist,
         'updated_at': firestore.SERVER_TIMESTAMP

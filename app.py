@@ -306,6 +306,12 @@ def show_profile_form():
         height=100
     )
     
+    phone_number = st.text_input(
+        "📞 Phone Number",
+        placeholder="Enter your contact number for delivery...",
+        max_chars=15
+    )
+    
     wishlist = st.text_area(
         "🎁 Wishlist",
         placeholder="Anything you would love to receive!",
@@ -319,10 +325,11 @@ def show_profile_form():
     )
     
     if st.button("💾 Save Profile", key="save_profile"):
-        if shipping_address and wishlist:
+        if shipping_address and phone_number and wishlist:
             save_user_profile(
                 st.session_state.user_data['user_id'],
                 shipping_address,
+                phone_number,
                 wishlist,
                 anti_wishlist
             )
@@ -331,7 +338,7 @@ def show_profile_form():
             st.balloons()
             st.rerun()
         else:
-            st.warning("Please fill in at least your shipping address and wishlist")
+            st.warning("Please fill in at least your shipping address, phone number, and wishlist")
     
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -534,6 +541,9 @@ def show_assignment_details(assignment):
                 
                 st.markdown("#### 📍 Shipping Address:")
                 st.info(child_profile.get('shipping_address', 'Not provided'))
+                
+                st.markdown("#### 📞 Phone Number:")
+                st.info(child_profile.get('phone_number', 'Not provided'))
                 
                 st.markdown("#### 🎁 Wishlist:")
                 st.success(child_profile.get('wishlist', 'Not provided'))
