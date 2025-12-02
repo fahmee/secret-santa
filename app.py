@@ -17,14 +17,132 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for festive styling
+# Custom CSS for festive Christmas styling
 st.markdown("""
 <style>
+    /* Christmas themed background - red and green */
     .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, 
+            #0d3b1f 0%,     /* Deep forest green */
+            #1a5c35 25%,    /* Christmas green */
+            #8b1538 50%,    /* Christmas red */
+            #1a5c35 75%,    /* Christmas green */
+            #0d3b1f 100%    /* Deep forest green */
+        );
+        position: relative;
     }
+    
+    /* Falling snow animation - more realistic */
+    @keyframes snowfall1 {
+        0% {
+            transform: translateY(-10vh);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(110vh);
+            opacity: 0.9;
+        }
+    }
+    
+    @keyframes snowfall2 {
+        0% {
+            transform: translateY(-10vh);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(110vh);
+            opacity: 0.7;
+        }
+    }
+    
+    @keyframes snowfall3 {
+        0% {
+            transform: translateY(-10vh);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(110vh);
+            opacity: 0.8;
+        }
+    }
+    
+    /* Create snow with only small snowflakes */
+    .stApp::before {
+        content: "";
+        pointer-events: none;
+    }
+    
+    .stApp::after {
+        content: "";
+        pointer-events: none;
+    }
+    
+    /* Third snow layer */
+    .main::before {
+        content: "* * * * * * * * * * * *";
+        position: fixed;
+        top: -10vh;
+        left: 50px;
+        width: 100%;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+        letter-spacing: 80px;
+        animation: snowfall3 32s linear infinite;
+        animation-delay: 5s;
+        pointer-events: none;
+        z-index: 9999;
+        text-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Twinkling and floating stars */
+    @keyframes starFloat {
+        0% {
+            transform: translateY(0px) translateX(0px);
+            opacity: 0.5;
+        }
+        25% {
+            transform: translateY(-20px) translateX(30px);
+            opacity: 1;
+        }
+        50% {
+            transform: translateY(-10px) translateX(-20px);
+            opacity: 0.7;
+        }
+        75% {
+            transform: translateY(-25px) translateX(15px);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(0px) translateX(0px);
+            opacity: 0.5;
+        }
+    }
+    
+    .main::after {
+        content: "⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐";
+        position: fixed;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        font-size: 18px;
+        letter-spacing: 40px;
+        animation: starFloat 6s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    /* Simple festive buttons */
     .stButton>button {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #dc2626 0%, #16a34a 100%);
         color: white;
         border: none;
         padding: 12px 30px;
@@ -34,41 +152,58 @@ st.markdown("""
         cursor: pointer;
         transition: all 0.3s;
     }
+    
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 15px rgba(220, 38, 38, 0.5);
     }
+    
+    /* Clean boxes */
     .success-box {
-        background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+        background: rgba(16, 185, 129, 0.9);
         padding: 20px;
         border-radius: 15px;
-        border-left: 5px solid #28a745;
+        border-left: 5px solid #10b981;
         margin: 20px 0;
-    }
-    .info-box {
-        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        padding: 20px;
-        border-radius: 15px;
-        border-left: 5px solid #17a2b8;
-        margin: 20px 0;
-    }
-    .warning-box {
-        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-        padding: 20px;
-        border-radius: 15px;
-        border-left: 5px solid #ffc107;
-        margin: 20px 0;
-    }
-    h1, h2, h3 {
         color: white;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
+    
+    .info-box {
+        background: rgba(59, 130, 246, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        border-left: 5px solid #3b82f6;
+        margin: 20px 0;
+        color: white;
+    }
+    
+    .warning-box {
+        background: rgba(245, 158, 11, 0.9);
+        padding: 20px;
+        border-radius: 15px;
+        border-left: 5px solid #f59e0b;
+        margin: 20px 0;
+        color: white;
+    }
+    
+    /* Golden headings */
+    h1, h2, h3 {
+        color: #ffd700 !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    /* Clean white profile cards */
     .profile-card {
         background: rgba(255, 255, 255, 0.95);
         padding: 30px;
         border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         margin: 20px 0;
+    }
+    
+    /* Keep sidebar simple with Christmas colors */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0d3b1f 0%, #8b1538 100%);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -130,16 +265,16 @@ def show_login_page():
         st.subheader("Create Your Account")
         
         with st.form("register_form"):
-            username = st.text_input("Username", key="reg_username")
-            email = st.text_input("Email", key="reg_email")
-            password = st.text_input("Password", type="password", key="reg_password")
-            confirm_password = st.text_input("Confirm Password", type="password", key="reg_confirm")
+            username = st.text_input("Name", key="reg_username", placeholder="Enter your full name")
+            email = st.text_input("Email", key="reg_email", placeholder="Your Deloitte email")
+            password = st.text_input("Password (minimum 6 characters)", type="password", key="reg_password")
             submitted = st.form_submit_button("Register")
             
             if submitted:
-                if username and email and password and confirm_password:
-                    if password != confirm_password:
-                        st.error("Passwords do not match!")
+                if username and email and password:
+                    # Check if email ends with @deloitte.com
+                    if not email.lower().strip().endswith('@deloitte.com'):
+                        st.error("Email must be a Deloitte email address (@deloitte.com)")
                     elif len(password) < 6:
                         st.error("Password must be at least 6 characters long")
                     else:
@@ -173,13 +308,13 @@ def show_profile_form():
     
     wishlist = st.text_area(
         "🎁 Wishlist",
-        placeholder="What would you like to receive? (Be specific!)",
+        placeholder="Anything you would love to receive!",
         height=150
     )
     
     anti_wishlist = st.text_area(
         "🚫 Anti-Wishlist",
-        placeholder="What would you NOT like to receive? (Allergies, dislikes, etc.)",
+        placeholder="Things you'd rather NOT receive! (e.g., Another coffee mug, Keychains, Motivational posters, Scented candles, Anything that needs assembly...)",
         height=100
     )
     
@@ -204,16 +339,15 @@ def show_quiz_page():
     """Display quiz to reveal Secret Santa assignment"""
     st.markdown("<h2 style='text-align: center;'>🎯 Answer to Reveal Your Secret Santa Child</h2>", unsafe_allow_html=True)
     
-    # Get current username and email
-    current_username = st.session_state.user_data['username']
+    # Get current user's email
     current_email = st.session_state.user_data['email']
     
-    # Check if this user has an assignment in Excel (with email verification)
-    assignment_result = get_assignment_from_excel(current_username, current_email)
+    # Check if this user has an assignment in Excel (using email only)
+    assignment_result = get_assignment_from_excel(current_email)
     
     if not assignment_result:
         st.markdown("<div class='warning-box'>", unsafe_allow_html=True)
-        st.markdown("**⚠️ Secret Santa assignment not found or email mismatch. Please contact the organizer.**")
+        st.markdown("**⚠️ Secret Santa assignment not found. Please contact the organizer.**")
         st.markdown("</div>", unsafe_allow_html=True)
         return
     
@@ -287,20 +421,36 @@ def show_quiz_page():
     st.markdown("</div>", unsafe_allow_html=True)
 
 def show_assignment_details(assignment):
-    """Display Secret Santa assignment after correct answer - child from Excel, details from DB"""
+    """Display Secret Santa assignment after correct answer - child email from Excel, details from DB"""
     
-    # Get current user's username and email
-    current_username = st.session_state.user_data['username']
+    # Get current user's email
     current_email = st.session_state.user_data['email']
     
-    # Get child from Excel file (THIS IS THE KEY - Excel tells us WHO the child is)
-    assignment_result = get_assignment_from_excel(current_username, current_email)
+    # Get child email from Excel file (Excel tells us child's EMAIL)
+    assignment_result = get_assignment_from_excel(current_email)
     
     if not assignment_result:
-        st.error(f"Could not find assignment for {current_username} in Excel file or email mismatch")
+        st.error(f"Could not find assignment for {current_email} in Excel file")
         return
     
-    child_username = assignment_result['child_username']
+    child_email = assignment_result['child_email']
+    
+    # Now get the child's details from DATABASE using their email
+    all_users = get_all_users()
+    child_user = None
+    for user in all_users:
+        if user['email'].lower() == child_email.lower():
+            child_user = user
+            break
+    
+    # If child hasn't registered, use email username as display name
+    if not child_user:
+        # Extract username from email (part before @)
+        child_username = child_email.split('@')[0]
+        child_registered = False
+    else:
+        child_username = child_user['username']
+        child_registered = True
     
     # Show appropriate message based on how they revealed
     if 'answered_correctly' not in st.session_state:
@@ -346,44 +496,42 @@ def show_assignment_details(assignment):
             st.rerun()
     
     if st.session_state.wheel_spun:
-        # Show the spinning animation with all DB usernames, landing on the Excel child
+        # Show the spinning animation with all DB usernames, landing on the child
         create_circular_spinner_wheel(wheel_names, child_username)
         
         st.markdown("---")
         
-        # NOW show the child details from DATABASE AFTER the wheel animation
-        child_user = None
-        # Find the child user in database by username
-        all_users = get_all_users()
-        for user in all_users:
-            if user['username'].lower() == child_username.lower():
-                child_user = user
-                break
-        
-        # Get child's profile from DATABASE
-        child_profile = None
-        if child_user:
-            child_profile = get_user_profile(child_user['user_id'])
-        
-        # Display child details from DATABASE
+        # Display child details
         st.markdown("<div class='profile-card'>", unsafe_allow_html=True)
         st.markdown(f"## 🎁 Your Secret Santa Child: **{child_username}**")
+        st.markdown(f"**Email:** {child_email}")
         
-        if child_profile:
-            st.markdown("### 📋 Their Details:")
+        if child_registered:
+            # Get child's profile from DATABASE
+            child_profile = get_user_profile(child_user['user_id'])
             
-            st.markdown("#### 📍 Shipping Address:")
-            st.info(child_profile.get('shipping_address', 'Not provided'))
-            
-            st.markdown("#### 🎁 Wishlist:")
-            st.success(child_profile.get('wishlist', 'Not provided'))
-            
-            st.markdown("#### 🚫 Anti-Wishlist:")
-            st.warning(child_profile.get('anti_wishlist', 'Not provided'))
+            if child_profile:
+                st.markdown("### 📋 Their Details:")
+                
+                st.markdown("#### 📍 Shipping Address:")
+                st.info(child_profile.get('shipping_address', 'Not provided'))
+                
+                st.markdown("#### 🎁 Wishlist:")
+                st.success(child_profile.get('wishlist', 'Not provided'))
+                
+                st.markdown("#### 🚫 Anti-Wishlist:")
+                st.warning(child_profile.get('anti_wishlist', 'Not provided'))
+            else:
+                st.markdown("<div class='warning-box'>", unsafe_allow_html=True)
+                st.markdown(f"**{child_username} hasn't completed their profile yet.**")
+                st.markdown("Please check back later for their details!")
+                st.markdown("</div>", unsafe_allow_html=True)
         else:
+            # Child hasn't registered yet
             st.markdown("<div class='warning-box'>", unsafe_allow_html=True)
-            st.markdown(f"**{child_username} hasn't completed their profile yet.**")
-            st.markdown("Please check back later for their details!")
+            st.markdown(f"**📧 This person hasn't registered yet.**")
+            st.markdown(f"Contact them at: **{child_email}**")
+            st.markdown("Ask them to register and complete their profile so you can see their wishlist!")
             st.markdown("</div>", unsafe_allow_html=True)
         
         st.markdown("</div>", unsafe_allow_html=True)

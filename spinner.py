@@ -40,7 +40,21 @@ def create_circular_spinner_wheel(names, winner_name):
         # Display wheel
         with wheel_placeholder.container():
             st.markdown("### 🎰 Spinning the Wheel...")
-            st.markdown("<div style='text-align: center; font-size: 2em; color: red;'>⬇️</div>", unsafe_allow_html=True)
+            
+            # Animated arrow that bounces
+            arrow_animation = ['⬇️', '⬇️', '⬇️']
+            arrow_styles = [
+                "transform: translateY(0px);",
+                "transform: translateY(-5px);", 
+                "transform: translateY(0px);"
+            ]
+            arrow_style = arrow_styles[step % 3]
+            
+            st.markdown(f"""
+                <div style='text-align: center; font-size: 2.5em; color: #FF4500; {arrow_style} transition: transform 0.1s;'>
+                    ⬇️
+                </div>
+            """, unsafe_allow_html=True)
             
             # Create circular layout
             cols = st.columns(8)
@@ -92,7 +106,6 @@ def create_circular_spinner_wheel(names, winner_name):
     with wheel_placeholder.container():
         st.markdown("### 🎁 Your Secret Santa Child!")
         st.balloons()
-        st.markdown("<div style='text-align: center; font-size: 2em; color: red;'>⬇️</div>", unsafe_allow_html=True)
         
         # Show final wheel with winner highlighted
         cols = st.columns(8)

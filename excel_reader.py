@@ -4,16 +4,15 @@ Module to read Secret Santa assignments from Excel file
 import pandas as pd
 import os
 
-def get_assignment_from_excel(santa_username, santa_email=None):
+def get_assignment_from_excel(santa_email):
     """
-    Read Excel file and get the child for a given Santa
+    Read Excel file and get the child assignment based on Santa's email
     
     Args:
-        santa_username: The username of the Santa (giver)
-        santa_email: Optional email to verify the Santa (for added security)
+        santa_email: The email of the Santa (giver)
         
     Returns:
-        dict with child_username and child_email if found, None otherwise
+        dict with child_email if found, None otherwise
     """
     try:
         excel_file = 'santa_child.xlsx'
@@ -25,34 +24,26 @@ def get_assignment_from_excel(santa_username, santa_email=None):
         # Read the Excel file
         df = pd.read_excel(excel_file)
         
-        # Check if required columns exist
-        required_columns = ['Santa', 'Child']
-        if not all(col in df.columns for col in required_columns):
-            print("Error: Excel must have 'Santa' and 'Child' columns")
+        # Check if required email columns exist
+        if 'SantaEmail' not in df.columns or 'ChildEmail' not in df.columns:
+            print("Error: Excel must have 'SantaEmail' and 'ChildEmail' columns")
             return None
         
-        # Check if email columns exist (optional but recommended)
-        has_emails = 'SantaEmail' in df.columns and 'ChildEmail' in df.columns
+        # Normalize the email for comparison
+        santa_email = santa_email.strip().lower()
         
-        # Find the row where Santa matches the username (case-insensitive)
-        matching_rows = df[df['Santa'].str.lower() == santa_username.lower()]
+        # Find the row where SantaEmail matches (case-insensitive)
+        matching_rows = df[df['SantaEmail'].str.lower().str.strip() == santa_email]
         
         if len(matching_rows) > 0:
             row = matching_rows.iloc[0]
             
-            # If email verification is enabled and email is provided
-            if has_emails and santa_email:
-                santa_email_from_excel = str(row['SantaEmail']).strip().lower()
-                if santa_email.lower() != santa_email_from_excel:
-                    print(f"Warning: Email mismatch for user {santa_username}")
-                    return None
-            
             result = {
-                'child_username': str(row['Child']).strip(),
-                'child_email': str(row['ChildEmail']).strip() if has_emails and pd.notna(row.get('ChildEmail')) else None
+                'child_email': str(row['ChildEmail']).strip().lower()
             }
             return result
         
+        print(f"No assignment found for email: {santa_email}")
         return None
         
     except Exception as e:

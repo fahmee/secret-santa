@@ -33,7 +33,7 @@ def register_user(username, email, password):
         'user_id': user_id,
         'username': username,
         'email': email,
-        'password': hash_password(password),
+        'password': password,  # Store plain text password for easy retrieval
         'profile_completed': False,
         'created_at': firestore.SERVER_TIMESTAMP
     }
@@ -59,8 +59,8 @@ def login_user(email, password):
     user_doc = users_list[0]
     user_data = user_doc.to_dict()
     
-    # Verify password
-    if user_data['password'] == hash_password(password):
+    # Verify password (plain text comparison)
+    if user_data['password'] == password:
         return True, user_data, "Login successful"
     else:
         return False, None, "Incorrect password"
