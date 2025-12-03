@@ -558,9 +558,10 @@ def show_assignment_details(assignment):
         else:
             # Child hasn't registered yet
             st.markdown("<div class='warning-box'>", unsafe_allow_html=True)
-            st.markdown(f"**📧 This person hasn't registered yet.**")
-            st.markdown(f"Contact them at: **{child_email}**")
-            st.markdown("Ask them to register and complete their profile so you can see their wishlist!")
+            st.markdown(f"**📧 Your Secret Child hasn't registered yet!**")
+            st.markdown(f"**Email:** {child_email}")
+            st.markdown("⚠️ **Important:** Please DO NOT contact them directly! Your identity as their Secret Santa must remain hidden until the final reveal.")
+            st.markdown("💡 They will be notified to register and complete their profile. Check back later for their wishlist and shipping details.")
             st.markdown("</div>", unsafe_allow_html=True)
         
         st.markdown("</div>", unsafe_allow_html=True)
